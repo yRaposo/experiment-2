@@ -66,5 +66,20 @@ output.innerHTML = slider.value; // Display the default slider value
 // Update the current slider value (each time you drag the slider handle)
 slider.oninput = function() {
   output.innerHTML = this.value;
+  updateDendro(dendroId, this.value);
 }
+
+// Função para atualizar a posição do dendro
+const updateDendro = async (id, position) => {
+  let response = await fetch(`http://localhost:8080/api/v1/dendro/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ position })
+  });
+
+  let json = await response.json();
+  console.log(json);
+};
 

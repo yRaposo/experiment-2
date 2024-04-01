@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,6 +26,7 @@ import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/v1/")
+@CrossOrigin(origins = "*")
 public class APIDendroController {
 
     Logger logger = LogManager.getLogger(getClass());
@@ -32,7 +34,6 @@ public class APIDendroController {
     @Autowired
     IDendroService dendroService;
 
-    @CrossOrigin
     @GetMapping("dendro")
     @Transactional
     public ResponseEntity<Object> consultaDendro() {
@@ -41,7 +42,6 @@ public class APIDendroController {
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.consultaDendros());
     }
 
-    @CrossOrigin
     @GetMapping("dendro/{id}")
     @Transactional
     public ResponseEntity<Object> consultaPorId(@PathVariable Long id) {
@@ -50,16 +50,14 @@ public class APIDendroController {
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.consultaDendroPorId(id));
     }
 
-    @CrossOrigin
     @GetMapping(value = "dendro", params = "nome")
     @Transactional
-    public ResponseEntity<Object> consultaPorNome(@RequestParam(value = "nome")String nome) {
+    public ResponseEntity<Object> consultaPorNome(@RequestParam(value = "nome") String nome) {
         logger.info("Consultando Dendro por nome");
 
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.consultaDendrosPorNome(nome));
     }
 
-    @CrossOrigin
     @PostMapping("dendro")
     @Transactional
     public ResponseEntity<Object> cadastrarDendro(@RequestBody Dendro dendro) {
@@ -68,8 +66,7 @@ public class APIDendroController {
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.cadastrarDendro(dendro));
     }
 
-    @CrossOrigin
-    @PatchMapping("dendro")
+    @PatchMapping("dendro/{id}")
     @Transactional
     public ResponseEntity<Object> atualizarDendro(@RequestBody Dendro dendro) {
         logger.info("Atualizando Dendro");
@@ -77,7 +74,6 @@ public class APIDendroController {
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.atualizarDendro(dendro));
     }
 
-    @CrossOrigin
     @DeleteMapping("dendro/{id}")
     @Transactional
     public ResponseEntity<Object> deletarDendro(@PathVariable Long id, HttpServletRequest req) {

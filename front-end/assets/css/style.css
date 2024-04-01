@@ -181,3 +181,14 @@ footer {
     background: #65A603; /* Green background */
     cursor: pointer; /* Cursor on hover */
   }
+
+  .env {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+    background: #00000000;
+    border: 0px;
+    color: #2B5501;
+}
