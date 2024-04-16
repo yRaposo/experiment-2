@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -68,8 +69,12 @@ public class APIDendroController {
 
     @PatchMapping("dendro/{id}")
     @Transactional
-    public ResponseEntity<Object> atualizarDendro(@RequestBody Dendro dendro) {
+    public ResponseEntity<Object> atualizarDendro(@PathVariable Long id,@RequestBody Dendro dendro) {
         logger.info("Atualizando Dendro");
+
+        Assert.notNull(id, "Id não pode ser nulo");
+
+        dendro.setId(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.atualizarDendro(dendro));
     }

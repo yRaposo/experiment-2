@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ExperimentApplication<experiment>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.raposo.experiment.ExperimentApplication",
+            "projectName": "experiment",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

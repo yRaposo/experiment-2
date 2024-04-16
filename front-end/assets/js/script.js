@@ -72,14 +72,22 @@ slider.oninput = function() {
 // Função para atualizar a posição do dendro
 const updateDendro = async (id, position) => {
   let response = await fetch(`http://localhost:8080/api/v1/dendro/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ position })
+    body: JSON.stringify({
+      position: position
+    })
   });
 
   let json = await response.json();
   console.log(json);
+
+  if (response.ok) {
+    console.log("Dendro atualizado com sucesso");
+  } else {
+    console.error("Erro ao atualizar Dendro");
+  }
 };
 
