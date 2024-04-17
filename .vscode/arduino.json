@@ -3,5 +3,5 @@
     "board": "esp32:esp32:esp32da",
     "programmer": "esptool",
     "port": "COM3",
-    "sketch": "dendro-client\\aiu\\aiu.ino"
+    "sketch": "dendro-client\\APITest\\APITest.ino"
 }
