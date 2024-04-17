@@ -1,5 +1,5 @@
 // http://localhost:8080/api/v1/dendro
-
+URL = 'https://sv95h56n-8080.brs.devtunnels.ms/api/v1/dendro';
 
 // Função para obter os parâmetros da URL
 const urlSearchParams = new URLSearchParams(window.location.search);
@@ -13,7 +13,7 @@ const readDendros = async () => {
   let dendros = document.querySelector('.dendros');
   dendros.innerHTML = '<div class="loading">Carregando...</div>';
 
-  let response = await fetch('http://localhost:8080/api/v1/dendro');
+  let response = await fetch(URL);
   let json = await response.json();
 
   if (json.length > 0) {
@@ -36,7 +36,7 @@ const readDendros = async () => {
 //Função para ler os Dendros individualmente
 async function getDendro(id) {
   const [resposeDendro] = await Promise.all([
-    fetch(`http://localhost:8080/api/v1/dendro/${id}`)
+    fetch(URL + `/${id}`)
   ]);
 
   const dataDendro = await resposeDendro.json();
@@ -71,7 +71,7 @@ slider.oninput = function() {
 
 // Função para atualizar a posição do dendro
 const updateDendro = async (id, position) => {
-  let response = await fetch(`http://localhost:8080/api/v1/dendro/${id}`, {
+  let response = await fetch(URL + `/${id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json'
@@ -83,11 +83,5 @@ const updateDendro = async (id, position) => {
 
   let json = await response.json();
   console.log(json);
-
-  if (response.ok) {
-    console.log("Dendro atualizado com sucesso");
-  } else {
-    console.error("Erro ao atualizar Dendro");
-  }
 };
 
