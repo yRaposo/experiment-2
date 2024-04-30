@@ -103,5 +103,5 @@ void loop() {
     }
 
     // Aguarda 10 segundos antes de executar o próximo ciclo do loop
-    delay(1);
+    delay(1000);
 }
