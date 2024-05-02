@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface IDendroRepository extends JpaRepository<Dendro, Long>{
-    public Optional<Dendro> findById(Long id);
+public interface IDendroRepository extends JpaRepository<Dendro, String>{
+    public Optional<Dendro> findById(String id);
     
     public List<Dendro> findByName(String name);
 }

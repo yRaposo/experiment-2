@@ -43,45 +43,27 @@ async function getDendro(id) {
   console.log(dataDendro);
 
   const title = document.querySelector('.dendroTitle');
-  const sliderValue = document.querySelector('.sliderVal');
-  const slider = document.querySelector('.slider');
+  const temp = document.querySelector('.temperature');
+  const hum = document.querySelector('.humidity');
+  const light = document.querySelector('.light');
 
   title.innerHTML = dataDendro.name;
-  slider.value = dataDendro.position;
-  sliderValue.innerHTML = slider.value;
+  temp.innerHTML = dataDendro.temperature;
+  hum.innerHTML = dataDendro.humidity;
+  light.innerHTML = dataDendro.light;
   
 }
 
-if (!dendroId) {
-  readDendros();
-} else {
-  console.log(dendroId);
-  getDendro(dendroId);
+function test() {
+  if (!dendroId) {
+    readDendros();
+  } else {
+    console.log(dendroId);
+    getDendro(dendroId);
+  }
 }
 
-var slider = document.getElementById("myRange");
-var output = document.getElementById("sliderVal");
-output.innerHTML = slider.value; // Display the default slider value
+setInterval(test, 1000);
 
-// Update the current slider value (each time you drag the slider handle)
-slider.oninput = function() {
-  output.innerHTML = this.value;
-  updateDendro(dendroId, this.value);
-}
 
-// Função para atualizar a posição do dendro
-const updateDendro = async (id, position) => {
-  let response = await fetch(URL + `/${id}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      position: position
-    })
-  });
-
-  let json = await response.json();
-  console.log(json);
-};
 

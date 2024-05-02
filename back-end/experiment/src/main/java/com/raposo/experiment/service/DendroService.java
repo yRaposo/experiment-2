@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.raposo.experiment.model.Dendro;
 import com.raposo.experiment.model.IDendroRepository;
@@ -50,10 +53,10 @@ public class DendroService implements IDendroService {
     }
 
     @Override
-    public Optional<Dendro> consultaDendroPorId(Long id) {
+    public Dendro consultaDendroPorId(String id) {
         logger.info("Consultando Dendro por id");
 
-        return dendroRepository.findById(id);
+        return dendroRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -68,14 +71,16 @@ public class DendroService implements IDendroService {
         logger.info("Atualizando Dendro");
 
         return dendroRepository.findById(dendro.getId()).map(d -> {
-            d.setPosition(dendro.getPosition());
+            d.setTemperature(dendro.getTemperature());
+            d.setHumidity(dendro.getHumidity());
+            d.setLight(dendro.getLight());
             
             return dendroRepository.save(d);
         });
     }
 
     @Override
-    public void deletarDendro(Long id) {
+    public void deletarDendro(String id) {
         logger.info("Deletando Dendro");
 
         dendroRepository.deleteById(id);

@@ -93,6 +93,11 @@ void loop() {
                 Serial.println(doc["position"].as<int>());
                 myservo.write(doc["position"].as<int>());
             }
+        } else if (httpCode == 404) {
+            // Se a requisição retornou um código de status 404 (Not Found), exibe uma mensagem informando que o recurso não foi encontrado, e criar um novo recurso
+            Serial.println("Recurso não encontrado");
+
+            
         } else {
             // Se a requisição falhou, exibe uma mensagem de erro
             Serial.println("Erro na requisição HTTP");

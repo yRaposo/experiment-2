@@ -45,7 +45,7 @@ public class APIDendroController {
 
     @GetMapping("dendro/{id}")
     @Transactional
-    public ResponseEntity<Object> consultaPorId(@PathVariable Long id) {
+    public ResponseEntity<Object> consultaPorId(@PathVariable String id) {
         logger.info("Consultando Dendro por id");
 
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.consultaDendroPorId(id));
@@ -59,7 +59,7 @@ public class APIDendroController {
         return ResponseEntity.status(HttpStatus.OK).body(dendroService.consultaDendrosPorNome(nome));
     }
 
-    @PostMapping("dendro")
+    @PostMapping("dendro/")
     @Transactional
     public ResponseEntity<Object> cadastrarDendro(@RequestBody Dendro dendro) {
         logger.info("Cadastrando Dendro");
@@ -69,7 +69,7 @@ public class APIDendroController {
 
     @PatchMapping("dendro/{id}")
     @Transactional
-    public ResponseEntity<Object> atualizarDendro(@PathVariable Long id,@RequestBody Dendro dendro) {
+    public ResponseEntity<Object> atualizarDendro(@PathVariable String id,@RequestBody Dendro dendro) {
         logger.info("Atualizando Dendro");
 
         Assert.notNull(id, "Id não pode ser nulo");
@@ -81,7 +81,7 @@ public class APIDendroController {
 
     @DeleteMapping("dendro/{id}")
     @Transactional
-    public ResponseEntity<Object> deletarDendro(@PathVariable Long id, HttpServletRequest req) {
+    public ResponseEntity<Object> deletarDendro(@PathVariable String id, HttpServletRequest req) {
         logger.info("Deletando Dendro");
 
         dendroService.deletarDendro(id);

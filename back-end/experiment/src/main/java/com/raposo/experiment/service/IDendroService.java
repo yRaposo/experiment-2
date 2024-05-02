@@ -11,11 +11,11 @@ public interface IDendroService {
 
     public List<Dendro> consultaDendrosPorNome(String nome);
 
-    public Optional<Dendro> consultaDendroPorId(Long id);
+    public Dendro consultaDendroPorId(String id);
 
     public Optional<Dendro> cadastrarDendro(Dendro dendro);
 
     public Optional<Dendro> atualizarDendro(Dendro dendro);
 
-    public void deletarDendro(Long id);
+    public void deletarDendro(String id);
 }
