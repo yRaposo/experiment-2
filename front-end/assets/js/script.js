@@ -1,5 +1,5 @@
 // http://localhost:8080/api/v1/dendro
-URL = 'https://sv95h56n-8080.brs.devtunnels.ms/api/v1/dendro';
+URL = 'https://sv95h56n-8081.brs.devtunnels.ms/api/v1/dendro';
 
 // Função para obter os parâmetros da URL
 const urlSearchParams = new URLSearchParams(window.location.search);
@@ -35,6 +35,7 @@ const readDendros = async () => {
 
 //Função para ler os Dendros individualmente
 async function getDendro(id) {
+  console.log(id);
   const [resposeDendro] = await Promise.all([
     fetch(URL + `/${id}`)
   ]);
@@ -54,16 +55,13 @@ async function getDendro(id) {
   
 }
 
-function test() {
   if (!dendroId) {
     readDendros();
   } else {
     console.log(dendroId);
     getDendro(dendroId);
   }
-}
 
-setInterval(test, 1000);
 
 
 

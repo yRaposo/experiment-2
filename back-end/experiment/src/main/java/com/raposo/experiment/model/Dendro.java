@@ -1,8 +1,10 @@
 package com.raposo.experiment.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.OneToMany;
 @Entity
 public class Dendro {
     @Id
@@ -10,21 +12,24 @@ public class Dendro {
 
     private String name;
     private double temperature;
-    private double humidity;
-    private double light;
+    private int luminosity;
+    
+    @OneToMany(mappedBy = "dendro")
+    private List<Modulo> modules;
 
+    // Constructors
     public Dendro() {
     }
 
-    public Dendro(String id, String name, double temperature, double humidity, double light) {
+    public Dendro(String id, String name, double temperature, int luminosity) {
         this.id = id;
         this.name = name;
         this.temperature = temperature;
-        this.humidity = humidity;
-        this.light = light;
-        
+        this.luminosity = luminosity;
+        this.modules = modules;
     }
 
+    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -49,19 +54,19 @@ public class Dendro {
         this.temperature = temperature;
     }
 
-    public double getHumidity() {
-        return humidity;
+    public int getLuminosity() {
+        return luminosity;
     }
 
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
+    public void setLuminosity(int luminosity) {
+        this.luminosity = luminosity;
     }
 
-    public double getLight() {
-        return light;
+    public List<Modulo> getModules() {
+        return modules;
     }
 
-    public void setLight(double light) {
-        this.light = light;
+    public void setModules(List<Modulo> modules) {
+        this.modules = modules;
     }
 }
