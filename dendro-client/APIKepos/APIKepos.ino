@@ -9,22 +9,27 @@
 #define DHTTYPE DHT22
 DHT dht(DHT_PIN, DHTTYPE);
 
+//bomba de agua
+#define BOMBA_PIN 13
+
 // Sensor de Umidade do Solo
 #define SOLO_PIN1 34
 #define SOLO_PIN2 32
 const int VALOR_MAXIMO = 634; // Valor com solo seco
 const int VALOR_MINIMO = 304; // Valor com solo umido
 const int CONCENTRACAO_MINIMA = 30;
+int Leituras[3] = {};
 
 // Sensor de Luminosidade
 #define LUMINOSITY_PIN 34
 
 // URL da API Kepos
-#define DENDRO_API_URL "https://lx0w99ks-8081.brs.devtunnels.ms/api/v1/dendro"
-#define MODULE_API_URL "https://lx0w99ks-8081.brs.devtunnels.ms/api/v1/modulo"
+#define DENDRO_API_URL "https://sv95h56n-8081.brs.devtunnels.ms/api/v1/dendro"
+#define MODULE_API_URL "https://sv95h56n-8081.brs.devtunnels.ms/api/v1/modulo"
 
-String ID = "1";
-const int ID_MODULO[] = {1, 2};
+String ID;
+String ID_MODULO[2];
+String NAME_MODULO[2];
 
 const char *ssid = "CHOCOLATRA";
 const char *password = "sa2nd3y40";
@@ -192,13 +197,77 @@ void attDendro()
     }
 }
 
+void verifyModulo()
+{
+    // Cria uma instância do objeto HTTPClient
+    HTTPClient client;
+
+    // Define a URL da requisição HTTP com base no número aleatório gerado
+    client.begin(MODULE_API_URL + String("?id=" + ID));
+
+    // Realiza uma requisição GET para a URL especificada
+    int httpCode = client.GET();
+
+    if (httpCode > 0 && httpCode != 404)
+    {
+        // Se a requisição foi bem-sucedida, exibe o código de status e o payload da resposta
+        Serial.print("Código de status da requisição: ");
+        Serial.println(httpCode);
+
+        // Lê o corpo da resposta e o armazena em uma String
+        String payload = client.getString();
+
+        // Exibe o payload da resposta
+        Serial.print("Resposta da requisição: ");
+        Serial.println(payload);
+
+        // Cria um objeto JSON a partir do payload da resposta
+        DynamicJsonDocument doc(1024);
+        deserializeJson(doc, payload);
+
+        // Verifica se o payload é um array
+        if (doc.is<JsonArray>())
+        {
+            // Obtém o array do payload
+            JsonArray array = doc.as<JsonArray>();
+
+            if (array.size() == 0)
+            {
+                // Exibe uma mensagem se o array estiver vazio
+                Serial.println("Não existem modulos registrados");
+            }
+            else
+            {
+                // Percorre cada objeto no array
+                for (JsonObject obj : array)
+                {
+                    // Exibe o ID e o nome do dispositivo obtidos de cada objeto
+                    Serial.print("ID do dispositivo: ");
+                    Serial.print(obj["id"].as<String>());
+
+                    Serial.print(" - Nome do dispositivo: ");
+                    Serial.println(obj["name"].as<String>());
+
+                    // Adiciona o ID e o nome do módulo aos vetores
+                    ID_MODULO[obj["id"].as<int>()] = obj["id"].as<String>();
+                }
+            }
+        }
+        else
+        {
+            // Exibe uma mensagem de erro se o payload não for um array
+            Serial.println("Erro: o payload não é um array");
+        }
+    }
+}
+
 void attModulo(String id, double umidade)
 {
     // Atualiza dados do Modulo
     //  Cria um objeto JSON para armazenar os dados dos sensores
     DynamicJsonDocument doc(1024);
 
-    doc["idDendro"] = ID; // Função que retorna a temperatura
+    doc["idDendro"] = ID;      // Função que retorna a temperatura
     doc["humidity"] = umidade; // Função que retorna a umidade
     Serial.println("Umid: " + String(umidade));
 
@@ -258,15 +327,35 @@ void modulo()
     const int CONCENTRACAO_MINIMA = 816;
 
     double leitura1 = analogRead(SOLO_PIN1);
-    leitura1 = (leitura1 - 1057) / 16.09;
+    leitura1 = map(leitura1, VALOR_MINIMO, VALOR_MAXIMO, 100, 0);
     Serial.println(leitura1);
 
     double leitura2 = analogRead(SOLO_PIN2);
-    leitura2 = (leitura2 - 1057) / 16.09;
+    leitura2 = map(leitura2, VALOR_MINIMO, VALOR_MAXIMO, 100, 0);
     Serial.println(leitura2);
 
-    attModulo("1", leitura1);
-    attModulo("2", leitura2);
+    Leituras[0] = leitura1;
+    Leituras[1] = leitura2;
+
+    motor(leitura1, leitura2);
+
+    for (int i = 1; i < 3; i++)
+    {
+        attModulo(ID_MODULO[i], Leituras[i-1]);
+    }
+}
+
+void motor(int leitura1, int leitura2)
+{
+    if (leitura1 < 50 || leitura2 < 50)
+    {
+        digitalWrite(BOMBA_PIN, HIGH);
+    }
+    else
+    {
+        digitalWrite(BOMBA_PIN, LOW);
+    }
+
 }
 
 void setup()
@@ -289,6 +378,7 @@ void setup()
 
     pinMode(SOLO_PIN1, INPUT);
     pinMode(SOLO_PIN2, INPUT);
+    pinMode(BOMBA_PIN, OUTPUT);
 
     dht.begin();
 }
@@ -302,6 +392,7 @@ void loop()
         // Código que será executado quando o dispositivo estiver conectado à internet
         verifyDendro();
         attDendro();
+        verifyModulo();
         modulo();
     }
     else
